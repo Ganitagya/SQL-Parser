@@ -57,16 +57,13 @@ string genCondition()
 
 void insert_to_select(string condition)
 {
-    char* variables[100];
-    string values[100];
+    string variables[100];
+    //string values[100];
     string::iterator iter;
-    int index = 0;
-    int column = 0;                                     //stores the column name
+
+    string column_name;                                 //buffer for column name
+    int no_of_col = 0;                                  //stores the number of columns
     int flag = 0;                                       //to check the completion of comditions
-
-    for(iter = condition.begin(); iter < condition.end(); iter++)
-        myfile<<*iter;
-
 
     for(iter = condition.begin(); iter <= condition.end() && flag == 0; iter++)
     {
@@ -74,28 +71,36 @@ void insert_to_select(string condition)
             iter++;
 
         iter++;
-        
+
         while(*iter != ')')                                 //insert will not have nested braces
         {
-            /*
-            while(*iter != ',' || *iter != ' ')
+            while(*iter != ',' && *iter != ' ' && *iter != ')')
             {
-                variables[column][index++] += *iter;
+                column_name += *iter;
                 iter++;
             }
 
-            variables[column][index] += '\0';
-            column++;                                       //for storing the next column name
-            index = 0;
+          //  variables[no_of_col] = column_name.c_str();
 
-            while(*iter != ',') iter++;
-            iter++;                                         //to cross the comma
+            variables[no_of_col] = column_name;
+            column_name.clear();
 
-            while(*iter == ' ') iter++;                     //ignore spaces*/
+            no_of_col++;                                       //for storing the next column name
 
-            cout<<*iter++;
+            while(*iter != ',' && *iter != ')')
+            {
+                iter++;
+            }
+
+            if(*iter == ',') iter++;                        //to cross the comma
+
+            while(*iter == ' ') iter++;                     //ignore spaces
         }
             flag = 1;
     }
-}
 
+    for(int i= 0;i<no_of_col;i++)
+    {
+      cout<<variables[i]<<endl;
+    }
+}
