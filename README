@@ -1,0 +1,10 @@
+OBJECTIVE:
+Before using a Unix env, it has to be made sure that the database is uptodate and ready to be used for a particular testing.
+There are 1000s ofsql files containing 1000s of sql DML statements and it becomes impossible to manually check whether they have been executed on a particular testing environment.
+This SQL-Parser will read the input file containing the DML statements and according to the type of query (INSERT/DELETE/UPDATE) will try to generate SELECT statements.
+For example:
+input file : INSERT into TABLE (COLUMN1, COLUMN2) VALUES (val1,val2);
+output file : SELECT COUNT(*) cnt from TABLE where COLUMN1 = val1 and COLUMN2 = val2;
+
+Now if the INSERT query has been executed then the COUNT value will be > 1
+and we will come to know that the DB is correct.
