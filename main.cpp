@@ -26,15 +26,15 @@ void checkQuery(string word)
 {
         string check;
 
-                check = word.substr(0,6);
-                for(int i=0; i < 6; i++)
+                check = word;
+                for(unsigned int i=0; i < word.length(); i++)
                     check[i] = toupper(check[i]);
 
                 if(check == "INSERT")
                 {
-                    myfile<<"--It is an insert query"<<endl;
+                    myfile<<endl<<"--It is an insert query"<<endl;
                     yourfile >> word >>word;
-                    myfile << "SELECT * FROM " << word << " WHERE ";
+                    myfile << "SELECT COUNT(*) cnt FROM " << word << " WHERE "<<endl;
                     insert_to_select(genCondition());
                 }
 }
@@ -58,11 +58,11 @@ string genCondition()
 void insert_to_select(string condition)
 {
     string variables[100];
-    //string values[100];
     string::iterator iter;
 
     string column_name;                                 //buffer for column name
     int no_of_col = 0;                                  //stores the number of columns
+    int no_of_values = 0;                               //stores the values
     int flag = 0;                                       //to check the completion of comditions
 
     for(iter = condition.begin(); iter <= condition.end() && flag == 0; iter++)
@@ -99,8 +99,54 @@ void insert_to_select(string condition)
             flag = 1;
     }
 
-    for(int i= 0;i<no_of_col;i++)
+    //Till now we have fetched the column names
+    //Now working on fetching the values and storing them
+
+    while (*iter != '(')
     {
-      cout<<variables[i]<<endl;
+      iter++;
+    }
+
+    iter++;                                                 //To jump over 'VALUES ('
+
+    column_name.clear();
+
+    while(iter < condition.end() && no_of_col >0)
+    {
+        while(*iter != ',' && no_of_col>0 && *iter !=')')                                //&& *iter != ' ' && *iter != ')')//as they may come in between ''
+        {
+          if(*iter == 39)
+          {
+            do
+            {
+              column_name += *iter;
+              iter++;
+            }while(*iter != 39);
+
+            column_name += *iter;
+            iter++;
+          }
+
+          else
+          {
+            column_name += *iter;
+            iter++;
+          }
+        }
+
+        variables[no_of_values] += " = ";
+        variables[no_of_values] += column_name;
+        column_name.clear();
+
+        no_of_col--;
+        no_of_values++;
+
+        iter++;
+    }
+
+    myfile<<variables[0]<<endl;
+    for(int i= 1;i<no_of_values;i++)
+    {
+      myfile<<"AND "<<variables[i]<<endl;
     }
 }
