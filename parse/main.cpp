@@ -5,7 +5,9 @@ int main()
     string word;
     word.clear();
 
-    segregate input;
+    //The input contains all the possible DML queries ( Insert, Update, Delete)
+    //segregate function separates the input into files containing only one type of DML query
+    segregate input;                    
     parser segregated_input;
     //myfile.open("outputSQL.txt", ios::app);
     cout << "Entering into separate input file creation Zone!!!" << endl;
