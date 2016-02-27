@@ -5,14 +5,16 @@ int main()
     string word;
     word.clear();
 
+    //myfile is the file pointer to the output file
     myfile.open("outputSQL.txt", ios::app);
     cout << "Entering into file creation Zone!!!" << endl;
 
+    //yourfile is the file pointer to the input file consisting of the DML queries
     if(yourfile.is_open())
     {
-        while(yourfile >> word)
+        while(yourfile >> word)                 //reading word from the input file
         {
-            checkQuery(word);
+            checkQuery(word);                   //check the type of the DML query (Insert/Delete/Update)
         }
     }
 
@@ -32,9 +34,12 @@ void checkQuery(string word)
 
                 if(check == "INSERT")
                 {
+                    //If it an Insert query then create the select query according to the inserted values
                     myfile<<endl<<"--It is an insert query"<<endl;
                     yourfile >> word >>word;
                     myfile << "SELECT COUNT(*) cnt FROM " << word << " WHERE "<<endl;
+                    
+                    //get the conditions to be applied (in where clause of the select query)
                     insert_to_select(genCondition());
                 }
 }
@@ -45,6 +50,8 @@ string genCondition()
     string condition;
     yourfile.get(ch);
 
+
+    //Read till the end of SQL (EOS) is reached
     while(ch != ';')
     {
         condition += ch;
@@ -68,15 +75,15 @@ void insert_to_select(string condition)
     for(iter = condition.begin(); iter <= condition.end() && flag == 0; iter++)
     {
         while(*iter != '(' )
-            iter++;
+            iter++;                                         //ignore all chars (if any) before '('
 
-        iter++;
+        iter++;                                             //cross '('
 
-        while(*iter != ')')                                 //insert will not have nested braces
+        while(*iter != ')')                                 //assuming insert will not have nested braces
         {
             while(*iter != ',' && *iter != ' ' && *iter != ')')
             {
-                column_name += *iter;
+                column_name += *iter;                       //every char between two , or two spaces must be a word
                 iter++;
             }
 
@@ -113,7 +120,7 @@ void insert_to_select(string condition)
 
     while(iter < condition.end() && no_of_col >0)
     {
-        while(*iter != ',' && no_of_col>0 && *iter !=')')                                //&& *iter != ' ' && *iter != ')')//as they may come in between ''
+        while(*iter != ',' && no_of_col>0 && *iter !=')')   //&& *iter != ' ' && *iter != ')')//as they may come in between ''
         {
           if(*iter == 39)
           {
