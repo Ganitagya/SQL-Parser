@@ -52,7 +52,7 @@ string genCondition()
 
 
     //Read till the end of SQL (EOS) is reached
-    while(ch != ';')
+    while(ch != ',')
     {
         condition += ch;
         yourfile.get(ch);
